@@ -1,5 +1,12 @@
 import React from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  BackHandler,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { Fontisto } from "@expo/vector-icons";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -44,19 +51,20 @@ const MainScreen = ({ navigation }) => {
     );
   };
 
-  const [originalPrice, setOriginalPrice] = React.useState(null);
-  const [discount, setDiscount] = React.useState(null);
+  const [originalPrice, setOriginalPrice] = React.useState("");
+  const [discount, setDiscount] = React.useState("");
   const [saving, setSaving] = React.useState(null);
   const [finalPrice, setFinalPrice] = React.useState(null);
-  //const [disabledBtn, setDisabledBtn] = React.useState(false);
   const [history, setHistory] = React.useState([]);
-
+  // const [disabledBtn, setDisabledBtn] = React.useState(true);
   const saveFunc = () => {
     let historyObj = { op: originalPrice, dis: discount, fp: finalPrice };
     let newArr = [...history, historyObj];
     setHistory(newArr);
-    console.log(history);
+    setOriginalPrice("");
+    setDiscount("");
   };
+
   React.useEffect(() => {
     if (originalPrice >= 0) {
       if (discount >= 0 && discount <= 100) {
@@ -69,7 +77,6 @@ const MainScreen = ({ navigation }) => {
       alert("Price cannot be negative!");
     }
   });
-
   return (
     <View style={styles.container}>
       <Text style={styles.head}>Let's see how much you save!</Text>
@@ -93,7 +100,16 @@ const MainScreen = ({ navigation }) => {
         <Text style={styles.result}>You Save: {saving}</Text>
         <Text style={styles.result}>Final Price: {finalPrice}</Text>
       </View>
-      <Pressable style={styles.hisBtn} onPress={() => saveFunc()}>
+      <Pressable
+        style={styles.hisBtn}
+        disabled={originalPrice <= 0 || discount <= 0}
+        backgroundColor={
+          originalPrice <= 0 || discount <= 0 ? "#ffe3b8" : "#F9AA33"
+        }
+        onPress={() => {
+          saveFunc();
+        }}
+      >
         <Text>SAVE</Text>
       </Pressable>
     </View>
@@ -131,11 +147,10 @@ const styles = StyleSheet.create({
   hisBtn: {
     marginTop: 25,
     width: "25%",
-    backgroundColor: "#F9AA33",
-    height: "7%",
+    height: "8%",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 8,
-    borderWidth: 1,
+    borderWidth: 0.5,
   },
 });
