@@ -1,41 +1,23 @@
 import React from "react";
-import {
-  Button,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { Fontisto } from "@expo/vector-icons";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import HistoryScreen from "./HistoryScreen";
 
 const Stack = createNativeStackNavigator();
 export default function App() {
-  const HistoryIcon = ({ navigation }) => {
-    return (
-      <Fontisto
-        name="history"
-        size={24}
-        color="black"
-        onPress={() => navigation.navigate("HistoryScreen")}
-      />
-    );
-  };
-
   return (
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
           name="MainScreen"
           component={MainScreen}
-          options={({ navigation }) => ({
+          options={{
             title: "Discount Calculator",
             headerStyle: { backgroundColor: "#F9AA33" },
             headerTitleAlign: "center",
-            headerRight: () => HistoryIcon({ navigation }),
-          })}
+          }}
         />
         <Stack.Screen name="HistoryScreen" component={HistoryScreen} />
       </Stack.Navigator>
@@ -43,6 +25,25 @@ export default function App() {
   );
 }
 const MainScreen = ({ navigation }) => {
+  navigation.setOptions({
+    headerRight: () => HistoryIcon(),
+  });
+
+  const HistoryIcon = () => {
+    return (
+      <Fontisto
+        name="history"
+        size={24}
+        color="black"
+        onPress={() =>
+          navigation.navigate("HistoryScreen", {
+            myArr: history,
+          })
+        }
+      />
+    );
+  };
+
   const [originalPrice, setOriginalPrice] = React.useState(null);
   const [discount, setDiscount] = React.useState(null);
   const [saving, setSaving] = React.useState(null);
@@ -95,14 +96,6 @@ const MainScreen = ({ navigation }) => {
       <Pressable style={styles.hisBtn} onPress={() => saveFunc()}>
         <Text>SAVE</Text>
       </Pressable>
-    </View>
-  );
-};
-
-const HistoryScreen = () => {
-  return (
-    <View>
-      <Text>This is History screnen</Text>
     </View>
   );
 };
